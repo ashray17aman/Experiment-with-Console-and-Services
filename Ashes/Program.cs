@@ -1,10 +1,14 @@
 ﻿using System;
 using System.ServiceProcess;
-
+using System.Runtime.InteropServices;
 namespace Ashes
 {
     class Program
     {
+        [DllImport("kernel32.dll")]
+        public static extern Boolean AllocConsole();
+        //[DllImport("kernel32.dll")]
+        //public static extern Boolean AttachConsole(int pid);
         static void Main(string[] args)
         {
             if ((!Environment.UserInteractive))
@@ -33,15 +37,19 @@ namespace Ashes
                 }
                 else
                 {
-                    Program.RunAsAConsole();
+                    //Program.RunAsAConsole();
+                    AllocConsole();
+                    //Console.Write(AllocConsole());
+                    //Console.Write(AttachConsole(-1));
+
+                    DataProcessor dataProcessor = new DataProcessor();
+                    dataProcessor.Start(args);
+                    Console.Write("Started in console, write exit to close \n");
+                    String input = String.Empty;
+                    while (input.ToLower() != "exit") input = Console.ReadLine();
+                    dataProcessor.Stop();
                 }
             }
-        }
-
-        static void RunAsAConsole()
-        {
-            DataProcessor dataProcessor = new DataProcessor();
-            dataProcessor.Execute();
         }
 
         static void RunAsAService()
