@@ -13,14 +13,16 @@ namespace Ashes
     {
         [DllImport("kernel32.dll")]
         public static extern Boolean AllocConsole();
-
+        public static bool stopThread = false;
         private static Timer aTimer;
         internal void toPass()
         {
-            AllocConsole();
+            //AllocConsole();
             while (true)
             {
-                System.Threading.Thread.Sleep(10000);
+                if (stopThread)
+                    break;
+                System.Threading.Thread.Sleep(2000);
                 LogMessage();
                 Console.Write("wohoo");
             }
@@ -32,6 +34,7 @@ namespace Ashes
             {
                 Thread abc = new Thread(new ThreadStart(this.toPass));
                 abc.Start();
+                Console.Write("thread started in data processor");
             }catch(Exception e)
             {
                 Console.Write("got some error");
@@ -52,7 +55,10 @@ namespace Ashes
 
         internal void Stop()
         {
-            aTimer.Stop();
+            if(aTimer!=null)
+                aTimer.Stop();
+            stopThread = true;
+            Console.Write("stopping");
         }
         /// <summary>
         /// Writes a simple message to a file in the application directory

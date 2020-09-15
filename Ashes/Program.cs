@@ -6,7 +6,7 @@ namespace Ashes
     class Program
     {
         [DllImport("kernel32.dll")]
-        public static extern Boolean AllocConsole();
+        public static extern bool AllocConsole();
         //[DllImport("kernel32.dll")]
         //public static extern Boolean AttachConsole(int pid);
         static void Main(string[] args)
