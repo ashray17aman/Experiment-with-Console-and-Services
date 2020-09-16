@@ -15,7 +15,7 @@ namespace Ashes
         public static extern Boolean AllocConsole();
         public static bool stopThread = false;
         private static Timer aTimer;
-        internal void toPass()
+        static void ToPass(object args)
         {
             //AllocConsole();
             while (true)
@@ -32,8 +32,8 @@ namespace Ashes
         {
             try
             {
-                Thread abc = new Thread(new ThreadStart(this.toPass));
-                abc.Start();
+                Thread abc = new Thread(ToPass);
+                abc.Start(arguments);
                 Console.Write("thread started in data processor");
             }catch(Exception e)
             {
