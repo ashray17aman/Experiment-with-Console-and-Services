@@ -18,12 +18,13 @@ namespace Ashes
         private static Timer aTimer;
         private static CancellationTokenSource ts = new CancellationTokenSource();
         private static CancellationToken ct = ts.Token;
-
+        private static Task abc;
         static void ToPass(string[] args)
         {
             //AllocConsole();
             while (true)
             {
+                //ct.ThrowIfCancellationRequested();
                 if (ct.IsCancellationRequested)
                 {
                     Console.Write("exiting from cancel token");
@@ -36,14 +37,15 @@ namespace Ashes
                 // LogMessage();
                 Console.Write("wohoo");
             }
+            Console.Write("outside while true loop");
             //FreeConsole();
         }
         internal void Start(string[] arguments)
         {
             try
             {
-                CancellationToken ct = ts.Token;
-                Task abc = Task.Run(() => ToPass(arguments),ct);
+                //CancellationToken ct = ts.Token;
+                abc = Task.Run(() => ToPass(arguments),ct);
                 // abc.Start(arguments);
                 Console.Write("thread started in data processor");
             }catch(Exception e)
@@ -70,7 +72,25 @@ namespace Ashes
                 aTimer.Stop();
             //stopThread = true;
             ts.Cancel();
-            Console.Write("stopping");
+            //Thread.Sleep(5000);
+            Console.Write("waiting for abc");
+            abc.Wait();
+            Console.Write("stopping \n");
+            try
+            {
+                // abc;
+                Console.Write(" in try");
+            }
+            catch(OperationCanceledException e)
+            {
+                Console.WriteLine($"{nameof(OperationCanceledException)} thrown with message: {e.Message}");
+
+            }
+            finally
+            {
+                ts.Dispose();
+                Console.Write(" in finally block");
+            }
         }
         /// <summary>
         /// Writes a simple message to a file in the application directory
