@@ -17,14 +17,19 @@ namespace Ashes
         public static bool stopThread = false;
         private static Timer aTimer;
         private static CancellationTokenSource ts = new CancellationTokenSource();
+        private static CancellationToken ct = ts.Token;
 
-        static void ToPass(string[] args,CancellationToken ct)
+        static void ToPass(string[] args)
         {
             //AllocConsole();
             while (true)
             {
                 if (ct.IsCancellationRequested)
+                {
+                    Console.Write("exiting from cancel token");
+                    Thread.Sleep(2000);
                     break;
+                }
                 //if (stopThread)
                 //  break;
                 System.Threading.Thread.Sleep(2000);
@@ -38,7 +43,7 @@ namespace Ashes
             try
             {
                 CancellationToken ct = ts.Token;
-                Task abc = Task.Run(() => ToPass(arguments,ct),ct);
+                Task abc = Task.Run(() => ToPass(arguments),ct);
                 // abc.Start(arguments);
                 Console.Write("thread started in data processor");
             }catch(Exception e)
