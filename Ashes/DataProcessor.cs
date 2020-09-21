@@ -5,6 +5,7 @@ using System.Timers;
 using System.Threading;
 using Timer = System.Timers.Timer;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 
 namespace Ashes
 {
@@ -15,15 +16,19 @@ namespace Ashes
         public static extern Boolean AllocConsole();
         public static bool stopThread = false;
         private static Timer aTimer;
-        static void ToPass(object args)
+        private static CancellationTokenSource ts = new CancellationTokenSource();
+
+        static void ToPass(string[] args,CancellationToken ct)
         {
             //AllocConsole();
             while (true)
             {
-                if (stopThread)
+                if (ct.IsCancellationRequested)
                     break;
+                //if (stopThread)
+                //  break;
                 System.Threading.Thread.Sleep(2000);
-                LogMessage();
+                // LogMessage();
                 Console.Write("wohoo");
             }
             //FreeConsole();
@@ -32,8 +37,9 @@ namespace Ashes
         {
             try
             {
-                Thread abc = new Thread(ToPass);
-                abc.Start(arguments);
+                CancellationToken ct = ts.Token;
+                Task abc = Task.Run(() => ToPass(arguments,ct),ct);
+                // abc.Start(arguments);
                 Console.Write("thread started in data processor");
             }catch(Exception e)
             {
@@ -57,7 +63,8 @@ namespace Ashes
         {
             if(aTimer!=null)
                 aTimer.Stop();
-            stopThread = true;
+            //stopThread = true;
+            ts.Cancel();
             Console.Write("stopping");
         }
         /// <summary>
