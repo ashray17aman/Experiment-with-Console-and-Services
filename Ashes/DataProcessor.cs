@@ -70,10 +70,10 @@ namespace Ashes
                 // if result == true, program ended in the specified time, call a new function to clear db connections 
                 // if result == false, timeout happened and program did not end, => either it is stuck or needs more time to run
             }
-            catch(OperationCanceledException e)
+            catch(Exception e)
             {
-                Console.Write("currently in exception");
-                Console.WriteLine($"{nameof(OperationCanceledException)} thrown with message: {e.Message}");
+                Console.Write("currently in exception \n\n");
+                // Console.WriteLine($"{nameof(OperationCanceledException)} thrown with message: {e.Message}");
                 // clear db connections one by one by checking if its active
             }
             finally
