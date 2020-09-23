@@ -15,101 +15,97 @@ namespace Ashes
         [DllImport("kernel32.dll")]
         public static extern Boolean AllocConsole();
         public static bool stopThread = false;
-        private static Timer aTimer;
+        //private static Timer aTimer;
         private static CancellationTokenSource ts = new CancellationTokenSource();
         private static CancellationToken ct = ts.Token;
         private static Task abc;
         static void ToPass(string[] args)
         {
-            //AllocConsole();
             while (true)
             {
-                //ct.ThrowIfCancellationRequested();
                 if (ct.IsCancellationRequested)
                 {
                     Console.Write("exiting from cancel token");
                     Thread.Sleep(2000);
                     break;
                 }
-                //if (stopThread)
-                //  break;
                 System.Threading.Thread.Sleep(2000);
-                // LogMessage();
-                Console.Write("wohoo");
+                Console.Write("wohoo \n");
+                throw new CustomException("This exception is expected!");
+
             }
-            Console.Write("outside while true loop");
-            //FreeConsole();
         }
         internal void Start(string[] arguments)
         {
             try
             {
-                //CancellationToken ct = ts.Token;
                 abc = Task.Run(() => ToPass(arguments),ct);
-                // abc.Start(arguments);
-                Console.Write("thread started in data processor");
+                Console.Write("thread started in data processor \n");
             }catch(Exception e)
             {
-                Console.Write("got some error");
+                Console.Write("got some error \n",e);
             }
         }
-        internal void Execute()
-        {
-            Console.Write("insite execute \n");
-            aTimer = new System.Timers.Timer(10000); // 10 Seconds
-            aTimer.Elapsed += new ElapsedEventHandler(OnTimedEvent);
-            aTimer.Enabled = true;
-        }
-        private static void OnTimedEvent(object source, ElapsedEventArgs e)
-        {
-        //    DataProcessor dataProcessor = new DataProcessor();
-            LogMessage();
-        }
+        //internal void Execute()
+        //{
+        //    Console.Write("insite execute \n");
+        //    aTimer = new System.Timers.Timer(10000); // 10 Seconds
+        //    aTimer.Elapsed += new ElapsedEventHandler(OnTimedEvent);
+        //    aTimer.Enabled = true;
+        //}
+        //private static void OnTimedEvent(object source, ElapsedEventArgs e)
+        //{
+        ////    DataProcessor dataProcessor = new DataProcessor();
+        //    LogMessage();
+        //}
 
         internal void Stop()
         {
-            if(aTimer!=null)
-                aTimer.Stop();
-            //stopThread = true;
-            ts.Cancel();
-            //Thread.Sleep(5000);
-            Console.Write("waiting for abc");
-            abc.Wait();
-            Console.Write("stopping \n");
             try
             {
-                // abc;
-                Console.Write(" in try");
+                ts.Cancel();
+                Console.Write("waiting for abc \n");
+                bool result = abc.Wait(5000);
+                Console.Write("\n stopping in try " + result + " \n");
+                // if result == true, program ended in the specified time, call a new function to clear db connections 
+                // if result == false, timeout happened and program did not end, => either it is stuck or needs more time to run
             }
             catch(OperationCanceledException e)
             {
+                Console.Write("currently in exception");
                 Console.WriteLine($"{nameof(OperationCanceledException)} thrown with message: {e.Message}");
-
+                // clear db connections one by one by checking if its active
             }
             finally
             {
                 ts.Dispose();
-                Console.Write(" in finally block");
+                Console.Write(" in finally block after disposing task");
             }
         }
         /// <summary>
         /// Writes a simple message to a file in the application directory
         /// </summary>
-        private static void LogMessage()
-        {
-            string assemblyName = Assembly.GetCallingAssembly().GetName().Name;
-            string fileName = string.Format(assemblyName + "-{0:yyyy-MM-dd}.log", DateTime.Now);
-            string filePath = AppDomain.CurrentDomain.BaseDirectory + fileName;
+        //private static void LogMessage()
+        //{
+        //    string assemblyName = Assembly.GetCallingAssembly().GetName().Name;
+        //    string fileName = string.Format(assemblyName + "-{0:yyyy-MM-dd}.log", DateTime.Now);
+        //    string filePath = AppDomain.CurrentDomain.BaseDirectory + fileName;
 
-            string message = "Execution completed at " + DateTime.Now.ToShortTimeString();
+        //    string message = "Execution completed at " + DateTime.Now.ToShortTimeString();
 
-            Console.WriteLine(message);
-            using (StreamWriter sw = new StreamWriter(filePath, true))
-            {
-                sw.WriteLine(message);
-                sw.Close();
-            }
-        }
+        //    Console.WriteLine(message);
+        //    using (StreamWriter sw = new StreamWriter(filePath, true))
+        //    {
+        //        sw.WriteLine(message);
+        //        sw.Close();
+        //    }
+        //}
 
     }
+}
+
+public class CustomException : Exception
+{
+    public CustomException(String message) : base(message)
+    { }
 }

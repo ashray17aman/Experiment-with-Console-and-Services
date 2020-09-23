@@ -14,7 +14,7 @@ namespace Ashes
 
         protected override void OnStart(string[] args)
         {
-            dataProcessor.Execute();
+            //dataProcessor.Execute();
         }
 
 
