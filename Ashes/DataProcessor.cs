@@ -12,14 +12,10 @@ namespace Ashes
 
     internal class DataProcessor
     {
-        [DllImport("kernel32.dll")]
-        public static extern Boolean AllocConsole();
-        public static bool stopThread = false;
-        //private static Timer aTimer;
-        private static CancellationTokenSource ts = new CancellationTokenSource();
-        private static CancellationToken ct = ts.Token;
-        private static Task abc;
-        static void ToPass(string[] args)
+        private CancellationTokenSource ts = new CancellationTokenSource();
+        private Task abc;
+
+        static void ToPass(string[] args,CancellationToken ct)
         {
             while (true)
             {
@@ -31,33 +27,16 @@ namespace Ashes
                 }
                 System.Threading.Thread.Sleep(2000);
                 Console.Write("wohoo \n");
-                throw new CustomException("This exception is expected!");
+                // throw new CustomException("This exception is expected!");
 
             }
         }
         internal void Start(string[] arguments)
-        {
-            try
-            {
-                abc = Task.Run(() => ToPass(arguments),ct);
-                Console.Write("thread started in data processor \n");
-            }catch(Exception e)
-            {
-                Console.Write("got some error \n",e);
-            }
+        {        
+            CancellationToken ct = ts.Token;
+            abc = Task.Run(() => ToPass(arguments,ct),ct);
+            Console.Write("thread started in data processor \n");
         }
-        //internal void Execute()
-        //{
-        //    Console.Write("insite execute \n");
-        //    aTimer = new System.Timers.Timer(10000); // 10 Seconds
-        //    aTimer.Elapsed += new ElapsedEventHandler(OnTimedEvent);
-        //    aTimer.Enabled = true;
-        //}
-        //private static void OnTimedEvent(object source, ElapsedEventArgs e)
-        //{
-        ////    DataProcessor dataProcessor = new DataProcessor();
-        //    LogMessage();
-        //}
 
         internal void Stop()
         {
@@ -67,13 +46,17 @@ namespace Ashes
                 Console.Write("waiting for abc \n");
                 bool result = abc.Wait(5000);
                 Console.Write("\n stopping in try " + result + " \n");
+                if (result == false)
+                {
+                    Console.Write("timeout failed, need to force cancel");
+                }
                 // if result == true, program ended in the specified time, call a new function to clear db connections 
                 // if result == false, timeout happened and program did not end, => either it is stuck or needs more time to run
             }
             catch(Exception e)
             {
-                Console.Write("currently in exception \n\n");
-                // Console.WriteLine($"{nameof(OperationCanceledException)} thrown with message: {e.Message}");
+                Console.Write("currently in exception");
+                Console.WriteLine($"{nameof(OperationCanceledException)} thrown with message: {e.Message}");
                 // clear db connections one by one by checking if its active
             }
             finally
