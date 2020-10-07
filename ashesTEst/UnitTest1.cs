@@ -18,13 +18,12 @@ namespace AshesTest
             mockPrg.CallBase = true;
             dp.CallBase = true;
             // dp.Setup(mock => mock.Start(cars));
-
             // mockPrg.Setup(mock => mock.RunAsAConsole(cars, dp.Object));
             mockPrg.Object.RunAsAConsole(cars, dp.Object);
-            dp.Object.Stop();
+            // dp.Object.Stop();
             mockPrg.Verify(mock => mock.RunAsAConsole(cars, dp.Object), Times.Once());
             dp.Verify(mock => mock.Start(cars), Times.Once());
-            dp.Verify(mock => mock.ToPass(cars), Times.Once());
+            dp.Verify(mock => mock.ToPass(cars,dp.Object.ts.Token), Times.Once());
         }
     }
 }

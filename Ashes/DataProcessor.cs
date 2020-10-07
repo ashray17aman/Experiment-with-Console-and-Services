@@ -15,11 +15,11 @@ namespace Ashes
         public CancellationTokenSource ts = new CancellationTokenSource();
         private Task abc;
         private Boolean flag = true;
-        public virtual void ToPass(string[] args)
+        public virtual void ToPass(string[] args, CancellationToken ct)
         {
             while (true)
             {
-                if (!flag)
+                if (ct.IsCancellationRequested)
                 {
                     Console.Write("exiting from cancel token");
                     Thread.Sleep(2000);
@@ -34,13 +34,13 @@ namespace Ashes
         public virtual void Start(string[] arguments)
         {        
             CancellationToken ct = ts.Token;
-            abc = Task.Run(() => ToPass(arguments),ct);
+            abc = Task.Run(() => ToPass(arguments,ct),ct);
             Console.Write("thread started in data processor \n");
         }
 
         public virtual void Stop()
         {
-            flag = false;
+            // flag = false;
             try
             {
                 ts.Cancel();
