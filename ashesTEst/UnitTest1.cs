@@ -18,6 +18,7 @@ namespace AshesTest
             mockPrg.CallBase = true;
             dp.CallBase = true;
             // dp.Setup(mock => mock.Start(cars));
+
             // mockPrg.Setup(mock => mock.RunAsAConsole(cars, dp.Object));
             mockPrg.Object.RunAsAConsole(cars, dp.Object);
             dp.Object.Stop();
