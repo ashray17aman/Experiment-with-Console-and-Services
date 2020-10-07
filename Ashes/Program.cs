@@ -3,7 +3,7 @@ using System.ServiceProcess;
 using System.Runtime.InteropServices;
 namespace Ashes
 {
-    class Program
+    public class Program
     {
         [DllImport("kernel32.dll")]
         public static extern bool AllocConsole();
@@ -37,21 +37,26 @@ namespace Ashes
                 }
                 else
                 {
-                    //Program.RunAsAConsole();
-                    AllocConsole();
-                    //Console.Write(AllocConsole());
-                    //Console.Write(AttachConsole(-1));
+                    Program pp = new Program();
+                    pp.RunAsAConsole(args);
 
-                    DataProcessor dataProcessor = new DataProcessor();
-                    dataProcessor.Start(args);
-                    Console.Write("Started in console, write exit to close \n");
-                    String input = String.Empty;
-                    while (input.ToLower() != "exit") input = Console.ReadLine();
-                    dataProcessor.Stop();
                 }
             }
         }
 
+        public virtual void RunAsAConsole(string[] args,DataProcessor dp=null)
+        {
+            AllocConsole();
+            //Console.Write(AllocConsole());
+            //Console.Write(AttachConsole(-1));
+
+            DataProcessor dataProcessor = new DataProcessor();
+            dataProcessor.Start(args);
+            Console.Write("Started in console, write exit to close \n");
+            String input = String.Empty;
+            while (input.ToLower() != "exit") input = Console.ReadLine();
+            dataProcessor.Stop();
+        }
         static void RunAsAService()
         {
             ServiceBase[] servicesToRun = new ServiceBase[]

@@ -10,12 +10,12 @@ using System.Threading.Tasks;
 namespace Ashes
 {
 
-    internal class DataProcessor
+    public class DataProcessor
     {
         private CancellationTokenSource ts = new CancellationTokenSource();
         private Task abc;
 
-        static void ToPass(string[] args,CancellationToken ct)
+        public virtual void ToPass(string[] args,CancellationToken ct)
         {
             while (true)
             {
@@ -31,7 +31,7 @@ namespace Ashes
 
             }
         }
-        internal void Start(string[] arguments)
+        public virtual void Start(string[] arguments)
         {        
             CancellationToken ct = ts.Token;
             abc = Task.Run(() => ToPass(arguments,ct),ct);
