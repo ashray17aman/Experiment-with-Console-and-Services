@@ -46,11 +46,13 @@ namespace Ashes
 
         public virtual void RunAsAConsole(string[] args,DataProcessor dp=null)
         {
-            AllocConsole();
+            // AllocConsole();
             //Console.Write(AllocConsole());
             //Console.Write(AttachConsole(-1));
 
             DataProcessor dataProcessor = new DataProcessor();
+            if (dp != null)
+                dataProcessor = dp;
             dataProcessor.Start(args);
             Console.Write("Started in console, write exit to close \n");
             String input = String.Empty;
