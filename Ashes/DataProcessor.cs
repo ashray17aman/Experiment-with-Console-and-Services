@@ -12,20 +12,20 @@ namespace Ashes
 
     public class DataProcessor
     {
-        private CancellationTokenSource ts = new CancellationTokenSource();
+        public CancellationTokenSource ts = new CancellationTokenSource();
         private Task abc;
-
-        public virtual void ToPass(string[] args,CancellationToken ct)
+        private Boolean flag = true;
+        public virtual void ToPass(string[] args)
         {
             while (true)
             {
-                if (ct.IsCancellationRequested)
+                if (!flag)
                 {
                     Console.Write("exiting from cancel token");
                     Thread.Sleep(2000);
                     break;
                 }
-                System.Threading.Thread.Sleep(2000);
+                //System.Threading.Thread.Sleep(2000);
                 Console.Write("wohoo \n");
                 // throw new CustomException("This exception is expected!");
 
@@ -34,12 +34,13 @@ namespace Ashes
         public virtual void Start(string[] arguments)
         {        
             CancellationToken ct = ts.Token;
-            abc = Task.Run(() => ToPass(arguments,ct),ct);
+            abc = Task.Run(() => ToPass(arguments),ct);
             Console.Write("thread started in data processor \n");
         }
 
-        internal void Stop()
+        public virtual void Stop()
         {
+            flag = false;
             try
             {
                 ts.Cancel();

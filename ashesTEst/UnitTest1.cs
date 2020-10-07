@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Ashes;
+using System.Threading;
 
 namespace AshesTest
 {
@@ -12,13 +13,17 @@ namespace AshesTest
         public void TestMethod1()
         {
             string[] cars = { "hello", "world" };
-            Mock<Program> mockPrg = new Mock<Program>();
+            var mockPrg = new Mock<Program>();
             Mock<DataProcessor> dp = new Mock<DataProcessor>();
-            dp.Setup(mock => mock.Start(cars));
-            mockPrg.Setup(mock => mock.RunAsAConsole(cars, dp.Object)).CallBase();
+            mockPrg.CallBase = true;
+            dp.CallBase = true;
+            // dp.Setup(mock => mock.Start(cars));
+            // mockPrg.Setup(mock => mock.RunAsAConsole(cars, dp.Object));
             mockPrg.Object.RunAsAConsole(cars, dp.Object);
+            dp.Object.Stop();
             mockPrg.Verify(mock => mock.RunAsAConsole(cars, dp.Object), Times.Once());
             dp.Verify(mock => mock.Start(cars), Times.Once());
+            dp.Verify(mock => mock.ToPass(cars), Times.Once());
         }
     }
 }
