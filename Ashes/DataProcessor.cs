@@ -52,16 +52,17 @@ namespace Ashes
 
         public virtual void Start(string[] arguments)
         {
-            if (abc != null)
-                throw new CustomException("start called twice");
-            CancellationToken ct = ts.Token;
-            abc = Task.Run(() => ToPass(arguments,ct),ct);
-            Console.Write("thread started in data processor \n");
-            string path = @"D:\fromstart.txt";
-            string text2write = "Hello World!" + DateTime.Now.ToShortTimeString();
-            System.IO.StreamWriter writer = new System.IO.StreamWriter(path);
-            writer.Write(text2write);
-            writer.Close();
+            throw new CustomException("start called twice");
+            //if (abc != null)
+            //    throw new CustomException("start called twice");
+            //CancellationToken ct = ts.Token;
+            //abc = Task.Run(() => ToPass(arguments,ct),ct);
+            //Console.Write("thread started in data processor \n");
+            //string path = @"D:\fromstart.txt";
+            //string text2write = "Hello World!" + DateTime.Now.ToShortTimeString();
+            //System.IO.StreamWriter writer = new System.IO.StreamWriter(path);
+            //writer.Write(text2write);
+            //writer.Close();
         }
 
         public virtual void Stop()
