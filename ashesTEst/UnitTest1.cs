@@ -12,16 +12,12 @@ namespace AshesTest
         [TestMethod]
         public void TestMethod1()
         {
-
             string[] cars = { "hello", "world" };
             var mockPrg = new Mock<Program>();
             Mock<DataProcessor> dp = new Mock<DataProcessor>();
             mockPrg.CallBase = true;
             dp.CallBase = true;
-            // dp.Setup(mock => mock.Start(cars));
-            // mockPrg.Setup(mock => mock.RunAsAConsole(cars, dp.Object));
             mockPrg.Object.RunAsAConsole(cars, dp.Object);
-            // dp.Object.Stop();
             mockPrg.Verify(mock => mock.RunAsAConsole(cars, dp.Object), Times.Once());
             dp.Verify(mock => mock.Start(cars), Times.Once());
             dp.Verify(mock => mock.ToPass(cars,dp.Object.ts.Token), Times.Once());
@@ -31,8 +27,11 @@ namespace AshesTest
         public void TestStop()
         {
             Mock<DataProcessor> dp = new Mock<DataProcessor>();
+            string[] cars = { "hello", "world" };
             dp.Setup(mock => mock.Stop()).CallBase();
-            dp.Setup(mock => mock.Release());
+            dp.Setup(mock => mock.Start(cars)).CallBase();
+            dp.Setup(mock => mock.Release()).CallBase();
+            dp.Object.Start(cars);
             dp.Object.Stop();
             dp.Verify(mock => mock.Release(), Times.Once());
         }
@@ -42,12 +41,12 @@ namespace AshesTest
         {
             string[] cars = { "hello", "world" };
             Mock<DataProcessor> dp = new Mock<DataProcessor>();
-            dp.CallBase = true;
-            
-            //CancellationTokenSource ts = dp.Object.ts;
-            //dp.Setup(mock => mock.Start(cars)).CallBase();
-            //dp.Setup(mock => mock.ToPass(cars, ts.Token)).CallBase();
-            //dp.Setup(mock => mock.InternalExecute(cars)).CallBase();
+            //dp.CallBase = true;
+
+            CancellationTokenSource ts = dp.Object.ts;
+            dp.Setup(mock => mock.Start(cars)).CallBase();
+            dp.Setup(mock => mock.ToPass(cars, ts.Token)).CallBase();
+            dp.Setup(mock => mock.InternalExecute(cars));
             dp.Object.Start(cars);
             dp.Verify(mock => mock.InternalExecute(cars), Times.AtLeastOnce());
 
@@ -67,7 +66,7 @@ namespace AshesTest
             dp.Object.Start(cars);
             dp.Object.Start(cars);
             dp.Verify(mock => mock.Start(cars), Times.AtLeastOnce());
-
         }
+
     }
 }

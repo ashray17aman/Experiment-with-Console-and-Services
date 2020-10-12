@@ -15,6 +15,7 @@ namespace Ashes
         public CancellationTokenSource ts = new CancellationTokenSource();
         private Task abc;
         private Boolean flag = true;
+
         public virtual void ToPass(string[] args, CancellationToken ct)
         {
             while (true)
@@ -70,7 +71,8 @@ namespace Ashes
             {
                 ts.Cancel();
                 Console.Write("waiting for abc \n");
-                bool result = abc.Wait(5000);
+                Console.Write(abc+" is abc \n");
+                bool result = abc.Wait(1000);
                 Console.Write("\n stopping in try " + result + " \n");
                 if (result == false)
                 {
@@ -81,7 +83,7 @@ namespace Ashes
             }
             catch(Exception e)
             {
-                Console.Write("currently in exception");
+                Console.Write("currently in exception \n");
                 Console.WriteLine($"{nameof(OperationCanceledException)} thrown with message: {e.Message}");
                 // clear db connections one by one by checking if its active
             }
@@ -96,25 +98,6 @@ namespace Ashes
         {
             Console.Write("releasing \n");
         }
-        /// <summary>
-        /// Writes a simple message to a file in the application directory
-        /// </summary>
-        //private static void LogMessage()
-        //{
-        //    string assemblyName = Assembly.GetCallingAssembly().GetName().Name;
-        //    string fileName = string.Format(assemblyName + "-{0:yyyy-MM-dd}.log", DateTime.Now);
-        //    string filePath = AppDomain.CurrentDomain.BaseDirectory + fileName;
-
-        //    string message = "Execution completed at " + DateTime.Now.ToShortTimeString();
-
-        //    Console.WriteLine(message);
-        //    using (StreamWriter sw = new StreamWriter(filePath, true))
-        //    {
-        //        sw.WriteLine(message);
-        //        sw.Close();
-        //    }
-        //}
-
     }
 }
 
