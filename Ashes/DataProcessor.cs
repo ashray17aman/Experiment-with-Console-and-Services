@@ -26,15 +26,23 @@ namespace Ashes
                     break;
                 }
                 InternalExecute(args);
-                Thread.Sleep(2000);
-                // break;
+                // Thread.Sleep(2000);
+                if (flag)
+                {
+                    string path = @"D:\fromexecute.txt";
+                    string text2write = "Hello World!" + DateTime.Now.ToShortTimeString();
+                    System.IO.StreamWriter writer = new System.IO.StreamWriter(path);
+                    writer.Write(text2write);
+                    writer.Close();
+                    flag = false;
+                }
             }
         }
         public virtual void InternalExecute(string[] args)
         {
             Console.Write("wohoo inside internal \n");
             // throw new CustomException("This exception is expected!");
-            string path = @"D:\mytesttext.txt";
+            string path = @"D:\fromexecuteinternal.txt";
             string text2write = "Hello World!"+ DateTime.Now.ToShortTimeString();
             System.IO.StreamWriter writer = new System.IO.StreamWriter(path);
             writer.Write(text2write);
@@ -42,10 +50,17 @@ namespace Ashes
         }
 
         public virtual void Start(string[] arguments)
-        {        
+        {
+            if (abc != null)
+                throw new CustomException("start called twice");
             CancellationToken ct = ts.Token;
             abc = Task.Run(() => ToPass(arguments,ct),ct);
             Console.Write("thread started in data processor \n");
+            string path = @"D:\fromstart.txt";
+            string text2write = "Hello World!" + DateTime.Now.ToShortTimeString();
+            System.IO.StreamWriter writer = new System.IO.StreamWriter(path);
+            writer.Write(text2write);
+            writer.Close();
         }
 
         public virtual void Stop()
