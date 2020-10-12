@@ -25,12 +25,22 @@ namespace Ashes
                     Thread.Sleep(2000);
                     break;
                 }
-                //System.Threading.Thread.Sleep(2000);
-                Console.Write("wohoo \n");
-                // throw new CustomException("This exception is expected!");
-
+                InternalExecute(args);
+                Thread.Sleep(2000);
+                // break;
             }
         }
+        public virtual void InternalExecute(string[] args)
+        {
+            Console.Write("wohoo inside internal \n");
+            // throw new CustomException("This exception is expected!");
+            string path = @"D:\mytesttext.txt";
+            string text2write = "Hello World!"+ DateTime.Now.ToShortTimeString();
+            System.IO.StreamWriter writer = new System.IO.StreamWriter(path);
+            writer.Write(text2write);
+            writer.Close();
+        }
+
         public virtual void Start(string[] arguments)
         {        
             CancellationToken ct = ts.Token;
@@ -63,8 +73,13 @@ namespace Ashes
             finally
             {
                 ts.Dispose();
+                Release();
                 Console.Write(" in finally block after disposing task");
             }
+        }
+        public virtual void Release()
+        {
+            Console.Write("releasing \n");
         }
         /// <summary>
         /// Writes a simple message to a file in the application directory

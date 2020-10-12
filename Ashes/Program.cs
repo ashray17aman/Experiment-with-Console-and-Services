@@ -56,8 +56,8 @@ namespace Ashes
             dataProcessor.Start(args);
             Console.Write("Started in console, write exit to close \n");
             String input = String.Empty;
-            // while (input.ToLower() != "exit") input = Console.ReadLine();
-            // dataProcessor.Stop();
+            while (input.ToLower() != "exit") input = Console.ReadLine();
+            dataProcessor.Stop();
         }
         static void RunAsAService()
         {
