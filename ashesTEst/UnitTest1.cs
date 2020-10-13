@@ -72,6 +72,8 @@ namespace AshesTest
 
             //dp.Setup(mock => mock.Start(cars)).Throws<InvalidOperationException> ();
             dp.Setup(mock => mock.Start(cars)).CallBase();
+            dp.Object.Start(cars);
+            dp.Verify(mock => mock.Start(cars), Times.Once());
             var exc = Assert.ThrowsException<InvalidOperationException>(() => dp.Object.Start(cars));
             Assert.AreEqual("start called twice", exc.Message);
         }
