@@ -55,6 +55,7 @@ namespace Ashes
             InvalidOperationException exc = new InvalidOperationException("start called twice");
             //exc.Message = "start called twice";
             //throw new CustomException("start called twice");
+            Console.Write("abc is " + abc +"\n");
             if (abc != null)
             {
                 Console.Write("Message is " + exc.Message + "\n");
@@ -62,7 +63,7 @@ namespace Ashes
             }
             CancellationToken ct = ts.Token;
             abc = Task.Run(() => ToPass(arguments, ct), ct);
-            Console.Write("thread started in data processor \n");
+            Console.Write("started in data processor \n");
             //string path = @"D:\fromstart.txt";
             //string text2write = "Hello World!" + DateTime.Now.ToShortTimeString();
             //System.IO.StreamWriter writer = new System.IO.StreamWriter(path);

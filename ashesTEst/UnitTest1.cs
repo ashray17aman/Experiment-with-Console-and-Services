@@ -71,11 +71,35 @@ namespace AshesTest
             //dp.Verify(mock => mock.Release(),Times.Once());
 
             //dp.Setup(mock => mock.Start(cars)).Throws<InvalidOperationException> ();
+
             dp.Setup(mock => mock.Start(cars)).CallBase();
             dp.Object.Start(cars);
             dp.Verify(mock => mock.Start(cars), Times.Once());
-            var exc = Assert.ThrowsException<InvalidOperationException>(() => dp.Object.Start(cars));
-            Assert.AreEqual("start called twice", exc.Message);
+            Console.Write("working fine \n");
+            //dp.CallBase = true;
+            //dp.Setup(mock => mock.Start(cars)).Throws<InvalidOperationException>();
+
+            //Assert.That(() => dp.Object.Start(cars), Throws.TypeOf<InvalidOperationException>());
+            var correctExceptionThrown = false;
+
+            try
+            {
+                dp.Object.Start(cars);
+            }
+            catch (Exception ex)
+            {
+                if (ex.Message == "start called twice")
+                    correctExceptionThrown = true;
+            }
+            Console.Write(correctExceptionThrown + " is correct exception thrown \n");
+            Assert.IsTrue(correctExceptionThrown);
+            //var exc = Assert.ThrowsException<InvalidOperationException>(() => dp.Object.Start(cars));
+            // dp.Object.Start(cars);
+            //dp.Verify(mock => mock.Start(cars), Times.Once());
+            Console.Write("coming out of test start \n");
+
+            //Assert.AreEqual("start called twice", ex.Message);
+
         }
 
         public void TestException()
