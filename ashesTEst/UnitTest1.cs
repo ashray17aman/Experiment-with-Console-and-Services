@@ -56,19 +56,24 @@ namespace AshesTest
         {
             string[] cars = { "hello", "world" };
             Mock<DataProcessor> dp = new Mock<DataProcessor>();
-            //dp.SetupSequence(f => f.Start(cars))
-            //.Returns(3)  // will be returned on 1st invocation
-            //.Returns(2)  // will be returned on 2nd invocation
-            //.Returns(1)  // will be returned on 3rd invocation
-            //.Returns(0)  // will be returned on 4th invocation
-            //.Throws(new InvalidOperationException());  // will be thrown on 5th invocation
+            ////dp.SetupSequence(f => f.Start(cars))
+            ////.Returns(3)  // will be returned on 1st invocation
+            ////.Returns(2)  // will be returned on 2nd invocation
+            ////.Returns(1)  // will be returned on 3rd invocation
+            ////.Returns(0)  // will be returned on 4th invocation
+            ////.Throws(new InvalidOperationException());  // will be thrown on 5th invocation
+            //dp.Setup(mock => mock.Start(cars)).CallBase();
+            //dp.Setup(mock => mock.Start(cars)).Throws<System.Exception>();
+            //dp.Setup(mock => mock.Stop()).CallBase();            
+            ////dp.Object.Start(cars);
+            //dp.Object.Stop();
+            ////dp.Verify(mock => mock.Start(cars), Times.AtLeastOnce());
+            //dp.Verify(mock => mock.Release(),Times.Once());
+
+            //dp.Setup(mock => mock.Start(cars)).Throws<InvalidOperationException> ();
             dp.Setup(mock => mock.Start(cars)).CallBase();
-            dp.Setup(mock => mock.Start(cars)).Throws<System.Exception>();
-            dp.Setup(mock => mock.Stop()).CallBase();            
-            //dp.Object.Start(cars);
-            dp.Object.Stop();
-            //dp.Verify(mock => mock.Start(cars), Times.AtLeastOnce());
-            dp.Verify(mock => mock.Release(),Times.Once());
+            var exc = Assert.ThrowsException<InvalidOperationException>(() => dp.Object.Start(cars));
+            Assert.AreEqual("start called twice", exc.Message);
         }
 
         public void TestException()

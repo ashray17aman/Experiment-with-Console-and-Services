@@ -52,7 +52,11 @@ namespace Ashes
 
         public virtual void Start(string[] arguments)
         {
-            throw new CustomException("start called twice");
+            InvalidOperationException exc = new InvalidOperationException("start called twice");
+            //exc.Message = "start called twice";
+            Console.Write("Message is "+exc.Message+"\n");
+            throw exc;
+            //throw new CustomException("start called twice");
             //if (abc != null)
             //    throw new CustomException("start called twice");
             //CancellationToken ct = ts.Token;
@@ -100,10 +104,10 @@ namespace Ashes
             Console.Write("releasing \n");
         }
     }
+    public class CustomException : Exception
+    {
+        public CustomException(String message) : base(message)
+        { }
+    }
 }
 
-public class CustomException : Exception
-{
-    public CustomException(String message) : base(message)
-    { }
-}
