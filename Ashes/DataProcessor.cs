@@ -27,6 +27,7 @@ namespace Ashes
                     break;
                 }
                 InternalExecute(args);
+                Console.Write("Currently in topass \n");
                 // Thread.Sleep(2000);
                 if (flag)
                 {
@@ -42,12 +43,13 @@ namespace Ashes
         public virtual void InternalExecute(string[] args)
         {
             Console.Write("wohoo inside internal \n");
-            // throw new CustomException("This exception is expected!");
-            string path = @"D:\fromexecuteinternal.txt";
-            string text2write = "Hello World!"+ DateTime.Now.ToShortTimeString();
-            System.IO.StreamWriter writer = new System.IO.StreamWriter(path);
-            writer.Write(text2write);
-            writer.Close();
+            throw new InvalidOperationException("exception in internalExecute");
+            Console.Write("thrown exception \n");
+            //string path = @"D:\fromexecuteinternal.txt";
+            //string text2write = "Hello World!"+ DateTime.Now.ToShortTimeString();
+            //System.IO.StreamWriter writer = new System.IO.StreamWriter(path);
+            //writer.Write(text2write);
+            //writer.Close();
         }
 
         public virtual void Start(string[] arguments)
@@ -79,6 +81,7 @@ namespace Ashes
                 ts.Cancel();
                 Console.Write("waiting for abc \n");
                 Console.Write(abc+" is abc \n");
+                Console.Write(abc.Exception.Message + " is exception\n");
                 bool result = abc.Wait(1000);
                 Console.Write("\n stopping in try " + result + " \n");
                 if (result == false)

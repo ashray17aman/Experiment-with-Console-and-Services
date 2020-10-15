@@ -44,11 +44,19 @@ namespace Ashes
             }
         }
 
+        public void ashee(String s=null)
+        {
+            Console.Write(s);
+        }
+        public void print(Action func, string s1)
+        {
+            func(s1);
+        }
         public virtual void RunAsAConsole(string[] args,DataProcessor dp=null)
         {
-            // AllocConsole();
-            //Console.Write(AllocConsole());
-            //Console.Write(AttachConsole(-1));
+            String t = "asdfafd";
+            print(t => ashee(t), t);
+
 
             DataProcessor dataProcessor = new DataProcessor();
             if (dp != null)

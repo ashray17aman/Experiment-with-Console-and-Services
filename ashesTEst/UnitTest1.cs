@@ -30,8 +30,11 @@ namespace AshesTest
             string[] cars = { "hello", "world" };
             dp.Setup(mock => mock.Stop()).CallBase();
             dp.Setup(mock => mock.Start(cars)).CallBase();
+            dp.Setup(mock => mock.ToPass(cars, dp.Object.ts.Token)).CallBase();
+            dp.Setup(mock => mock.InternalExecute(cars)).CallBase();
             dp.Setup(mock => mock.Release()).CallBase();
             dp.Object.Start(cars);
+            Thread.Sleep(1000);
             dp.Object.Stop();
             dp.Verify(mock => mock.Release(), Times.Once());
         }
@@ -41,47 +44,24 @@ namespace AshesTest
         {
             string[] cars = { "hello", "world" };
             Mock<DataProcessor> dp = new Mock<DataProcessor>();
-            //dp.CallBase = true;
-
             CancellationTokenSource ts = dp.Object.ts;
             dp.Setup(mock => mock.Start(cars)).CallBase();
             dp.Setup(mock => mock.ToPass(cars, ts.Token)).CallBase();
             dp.Setup(mock => mock.InternalExecute(cars));
             dp.Object.Start(cars);
             dp.Verify(mock => mock.InternalExecute(cars), Times.AtLeastOnce());
-
         }
+
         [TestMethod]
         public void TestStart()
         {
             string[] cars = { "hello", "world" };
             Mock<DataProcessor> dp = new Mock<DataProcessor>();
-            ////dp.SetupSequence(f => f.Start(cars))
-            ////.Returns(3)  // will be returned on 1st invocation
-            ////.Returns(2)  // will be returned on 2nd invocation
-            ////.Returns(1)  // will be returned on 3rd invocation
-            ////.Returns(0)  // will be returned on 4th invocation
-            ////.Throws(new InvalidOperationException());  // will be thrown on 5th invocation
-            //dp.Setup(mock => mock.Start(cars)).CallBase();
-            //dp.Setup(mock => mock.Start(cars)).Throws<System.Exception>();
-            //dp.Setup(mock => mock.Stop()).CallBase();            
-            ////dp.Object.Start(cars);
-            //dp.Object.Stop();
-            ////dp.Verify(mock => mock.Start(cars), Times.AtLeastOnce());
-            //dp.Verify(mock => mock.Release(),Times.Once());
-
-            //dp.Setup(mock => mock.Start(cars)).Throws<InvalidOperationException> ();
-
             dp.Setup(mock => mock.Start(cars)).CallBase();
             dp.Object.Start(cars);
             dp.Verify(mock => mock.Start(cars), Times.Once());
             Console.Write("working fine \n");
-            //dp.CallBase = true;
-            //dp.Setup(mock => mock.Start(cars)).Throws<InvalidOperationException>();
-
-            //Assert.That(() => dp.Object.Start(cars), Throws.TypeOf<InvalidOperationException>());
             var correctExceptionThrown = false;
-
             try
             {
                 dp.Object.Start(cars);
@@ -93,13 +73,7 @@ namespace AshesTest
             }
             Console.Write(correctExceptionThrown + " is correct exception thrown \n");
             Assert.IsTrue(correctExceptionThrown);
-            //var exc = Assert.ThrowsException<InvalidOperationException>(() => dp.Object.Start(cars));
-            // dp.Object.Start(cars);
-            //dp.Verify(mock => mock.Start(cars), Times.Once());
             Console.Write("coming out of test start \n");
-
-            //Assert.AreEqual("start called twice", ex.Message);
-
         }
 
         public void TestException()
