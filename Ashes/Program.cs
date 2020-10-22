@@ -48,14 +48,14 @@ namespace Ashes
         {
             Console.Write(s);
         }
-        public void print(Action func, string s1)
+        public void print(Action func, string s1=null)
         {
-            func(s1);
+            func();
         }
         public virtual void RunAsAConsole(string[] args,DataProcessor dp=null)
         {
             String t = "asdfafd";
-            print(t => ashee(t), t);
+            print(() => ashee(t),t);
 
 
             DataProcessor dataProcessor = new DataProcessor();

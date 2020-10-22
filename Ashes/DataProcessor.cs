@@ -12,44 +12,40 @@ namespace Ashes
 
     public class DataProcessor
     {
-        public CancellationTokenSource ts = new CancellationTokenSource();
+        public CancellationTokenSource ts;
         private Task abc;
-        private Boolean flag = true;
+        private Boolean flag;
+
+        public DataProcessor()
+        {
+            ts = new CancellationTokenSource();
+            flag = true;
+        }
 
         public virtual void ToPass(string[] args, CancellationToken ct)
         {
             while (true)
             {
+                //ct.ThrowIfCancellationRequested();
                 if (ct.IsCancellationRequested)
-                {
-                    Console.Write("exiting from cancel token");
-                    Thread.Sleep(2000);
-                    break;
-                }
+                    throw new OperationCanceledException();
                 InternalExecute(args);
                 Console.Write("Currently in topass \n");
                 // Thread.Sleep(2000);
-                if (flag)
-                {
-                    string path = @"D:\fromexecute.txt";
-                    string text2write = "Hello World!" + DateTime.Now.ToShortTimeString();
-                    System.IO.StreamWriter writer = new System.IO.StreamWriter(path);
-                    writer.Write(text2write);
-                    writer.Close();
-                    flag = false;
-                }
+                //if (flag)
+                //{
+                //    //string path = @"D:\fromexecute.txt";
+                //    //string text2write = "Hello World!" + DateTime.Now.ToShortTimeString();
+                //    //System.IO.StreamWriter writer = new System.IO.StreamWriter(path);
+                //    //writer.Write(text2write);
+                //    //writer.Close();
+                //    flag = false;
+                //}
             }
         }
         public virtual void InternalExecute(string[] args)
         {
             Console.Write("wohoo inside internal \n");
-            throw new InvalidOperationException("exception in internalExecute");
-            Console.Write("thrown exception \n");
-            //string path = @"D:\fromexecuteinternal.txt";
-            //string text2write = "Hello World!"+ DateTime.Now.ToShortTimeString();
-            //System.IO.StreamWriter writer = new System.IO.StreamWriter(path);
-            //writer.Write(text2write);
-            //writer.Close();
         }
 
         public virtual void Start(string[] arguments)
@@ -80,9 +76,9 @@ namespace Ashes
             {
                 ts.Cancel();
                 Console.Write("waiting for abc \n");
-                Console.Write(abc+" is abc \n");
-                Console.Write(abc.Exception.Message + " is exception\n");
-                bool result = abc.Wait(1000);
+                bool result = abc.Wait(-1);
+                Console.Write(abc + " is abc \n");
+                // Console.Write(abc.Exception.Message + " is exception\n");
                 Console.Write("\n stopping in try " + result + " \n");
                 if (result == false)
                 {
@@ -93,9 +89,28 @@ namespace Ashes
             }
             catch(Exception e)
             {
-                Console.Write("currently in exception \n");
-                Console.WriteLine($"{nameof(OperationCanceledException)} thrown with message: {e.Message}");
-                // clear db connections one by one by checking if its active
+                if(e is AggregateException)
+                {
+                    AggregateException ex = (AggregateException)e;
+                    foreach (Exception exe in ex.InnerExceptions)
+                    {
+                        if(exe is OperationCanceledException)
+                            Console.WriteLine(" operation cancelled exception ",exe.Message);
+                        else
+                        {
+                            Console.Write("currently in exception \n");
+                            Console.WriteLine(" thrown with message: ", e.Message);
+                            // clear db connections one by one by checking if its active
+                        }
+                    }
+
+                }
+                else
+                {
+                    Console.Write("currently in exception \n");
+                    Console.WriteLine(" thrown with message: ", e.Message);
+                    // clear db connections one by one by checking if its active
+                }
             }
             finally
             {
