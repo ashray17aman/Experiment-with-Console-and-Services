@@ -14,6 +14,7 @@ namespace Ashes
             if ((!Environment.UserInteractive))
             {
                 Program.RunAsAService();
+                Console.Write("hi branch");
             }
             else
             {
