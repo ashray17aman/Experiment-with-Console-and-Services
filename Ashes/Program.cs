@@ -7,8 +7,6 @@ namespace Ashes
     {
         [DllImport("kernel32.dll")]
         public static extern bool AllocConsole();
-        //[DllImport("kernel32.dll")]
-        //public static extern Boolean AttachConsole(int pid);
         static void Main(string[] args)
         {
             if ((!Environment.UserInteractive))
@@ -56,8 +54,6 @@ namespace Ashes
         {
             String t = "asdfafd";
             print(() => ashee(t),t);
-
-
             DataProcessor dataProcessor = new DataProcessor();
             if (dp != null)
                 dataProcessor = dp;

@@ -17,10 +17,11 @@ namespace AshesTest
             Mock<DataProcessor> dp = new Mock<DataProcessor>();
             mockPrg.CallBase = true;
             dp.CallBase = true;
+            CancellationTokenSource ts = dp.Object.tokenSource;
             mockPrg.Object.RunAsAConsole(cars, dp.Object);
             mockPrg.Verify(mock => mock.RunAsAConsole(cars, dp.Object), Times.Once());
             dp.Verify(mock => mock.Start(cars), Times.Once());
-            dp.Verify(mock => mock.ToPass(cars,dp.Object.ts.Token), Times.Once());
+            dp.Verify(mock => mock.ToPass(cars,ts.Token), Times.Once());
         }
 
         [TestMethod]
@@ -28,9 +29,10 @@ namespace AshesTest
         {
             Mock<DataProcessor> dp = new Mock<DataProcessor>();
             string[] cars = { "hello", "world" };
+            CancellationTokenSource ts = dp.Object.tokenSource;
             dp.Setup(mock => mock.Stop()).CallBase();
             dp.Setup(mock => mock.Start(cars)).CallBase();
-            dp.Setup(mock => mock.ToPass(cars, dp.Object.ts.Token)).CallBase();
+            dp.Setup(mock => mock.ToPass(cars, ts.Token)).CallBase();
             dp.Setup(mock => mock.InternalExecute(cars)).CallBase();
             dp.Setup(mock => mock.Release()).CallBase();
             dp.Object.Start(cars);
@@ -44,7 +46,7 @@ namespace AshesTest
         {
             string[] cars = { "hello", "world" };
             Mock<DataProcessor> dp = new Mock<DataProcessor>();
-            CancellationTokenSource ts = dp.Object.ts;
+            CancellationTokenSource ts = dp.Object.tokenSource;
             dp.Setup(mock => mock.Start(cars)).CallBase();
             dp.Setup(mock => mock.ToPass(cars, ts.Token)).CallBase();
             dp.Setup(mock => mock.InternalExecute(cars));

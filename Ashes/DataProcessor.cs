@@ -12,7 +12,18 @@ namespace Ashes
 
     public class DataProcessor
     {
-        public CancellationTokenSource ts;
+        private CancellationTokenSource ts;
+        public CancellationTokenSource tokenSource
+        {
+            get
+            {
+                return ts;
+            }
+            set
+            {
+                ;
+            }
+        }
         private Task abc;
         private Boolean flag;
 
@@ -26,21 +37,10 @@ namespace Ashes
         {
             while (true)
             {
-                //ct.ThrowIfCancellationRequested();
-                if (ct.IsCancellationRequested)
-                    throw new OperationCanceledException();
+                ct.ThrowIfCancellationRequested();
                 InternalExecute(args);
                 Console.Write("Currently in topass \n");
-                // Thread.Sleep(2000);
-                //if (flag)
-                //{
-                //    //string path = @"D:\fromexecute.txt";
-                //    //string text2write = "Hello World!" + DateTime.Now.ToShortTimeString();
-                //    //System.IO.StreamWriter writer = new System.IO.StreamWriter(path);
-                //    //writer.Write(text2write);
-                //    //writer.Close();
-                //    flag = false;
-                //}
+                Thread.Sleep(2000);
             }
         }
         public virtual void InternalExecute(string[] args)
@@ -62,11 +62,6 @@ namespace Ashes
             CancellationToken ct = ts.Token;
             abc = Task.Run(() => ToPass(arguments, ct), ct);
             Console.Write("started in data processor \n");
-            //string path = @"D:\fromstart.txt";
-            //string text2write = "Hello World!" + DateTime.Now.ToShortTimeString();
-            //System.IO.StreamWriter writer = new System.IO.StreamWriter(path);
-            //writer.Write(text2write);
-            //writer.Close();
         }
 
         public virtual void Stop()
@@ -103,7 +98,6 @@ namespace Ashes
                             // clear db connections one by one by checking if its active
                         }
                     }
-
                 }
                 else
                 {
